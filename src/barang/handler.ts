@@ -91,6 +91,17 @@ export const updateBarang = async (
     return validationError(res, parseZodError(validate.error));
   }
 
+  const isExists = await db.barang.findFirst({
+    where: { id: validateId.data.id },
+  });
+
+  if (!isExists) {
+    return notFound(
+      res,
+      `Barang dengan id ${validateId.data.id} tidak ditemukan`
+    );
+  }
+
   const barang = await db.barang.update({
     where: { id: validateId.data.id },
     data: validate.data,
